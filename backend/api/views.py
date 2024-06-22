@@ -60,7 +60,7 @@ def CheckGuess(request):
                     break
 
             if matched_song:
-                return JsonResponse({'message': 'correct.', 'song': {'id': matched_song.id, 'title': matched_song.title}}, status=200)
+                return JsonResponse({'message': 'correct.', 'song': {'id': matched_song.id, 'title': matched_song.title, 'artist' : matched_song.artist}}, status=200)
             else:
                 return JsonResponse({'message': 'incorrect.'}, status=400)
 
