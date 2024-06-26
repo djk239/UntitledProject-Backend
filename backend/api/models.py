@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 
 class Song(models.Model):
@@ -19,4 +19,8 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Score(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
     

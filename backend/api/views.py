@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
-from .serializers import UserSerializer, SongSerializer, QuizSerializer
-from .models import Quiz, Song
+from .serializers import UserSerializer, SongSerializer, QuizSerializer, ScoreSerializer
+from .models import Quiz, Song, Score
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.http import JsonResponse
 import spotipy, json, random
@@ -21,6 +21,11 @@ class SongListCreateAPIView(generics.ListCreateAPIView):
     queryset = Song.objects.all()
     serializer_class = SongSerializer
     permission_classes = [IsAuthenticated]
+
+class ScoreListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -60,6 +65,16 @@ def CheckGuess(request):
                     break
 
             if matched_song:
+                # Update user score (using authenticated user)
+                user = request.user  # User object is available due to authentication
+                try:
+                    score = Score.objects.get(user=user)  # Get existing score object
+                    score.score += 1  # Increment score by 1
+                    score.save()
+                except Score.DoesNotExist:
+                    # Create a new score object if it doesn't exist yet
+                    score = Score.objects.create(user=user, score=1)
+                    score.save()
                 return JsonResponse({'message': 'correct.', 'song': {'id': matched_song.id, 'title': matched_song.title, 'artist' : matched_song.artist}}, status=200)
             else:
                 return JsonResponse({'message': 'incorrect.'}, status=400)
@@ -98,3 +113,21 @@ class SignupView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+@permission_classes([IsAuthenticated])
+def top_scores(request):
+    top_users = Score.objects.order_by('-score')[:10]
+    serializer = ScoreSerializer(top_users, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def user_score(request):
+    user = request.user
+    try:
+        user_score = Score.objects.get(user=user)
+        serializer = ScoreSerializer(user_score)
+        return JsonResponse(serializer.data)
+    except Score.DoesNotExist:
+        return JsonResponse({'error': 'User score not found'}, status=404)
+
