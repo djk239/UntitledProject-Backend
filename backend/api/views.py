@@ -28,7 +28,6 @@ class ScoreListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ScoreSerializer
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def RandomClip(request):
     songs = Song.objects.all()
     if(songs):
