@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('songs/', SongListCreateAPIView.as_view(), name='song-list-create'),
+    path('songs/<int:pk>/', SongListCreateAPIView.as_view(), name='song-playable-update'),
     path('score/', ScoreListCreateAPIView.as_view(), name='score-list-create'),
     path('songs/random/', RandomClip, name='random-clip'),
     path('getsource/', get_audio_source, name='get_audio_source'),

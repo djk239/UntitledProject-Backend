@@ -22,23 +22,31 @@ class SongListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SongSerializer
     permission_classes = [IsAuthenticated]
 
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.isPlayable = request.data.get('isPlayable', instance.isPlayable)
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)
+
 class ScoreListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def RandomClip(request):
-    songs = Song.objects.all()
-    if(songs):
-        randomClip = random.choice(songs)
+    playing_clips = Song.objects.filter(isPlayable=True)  # Filter for playable clips
+    if playing_clips:
+        randomClip = random.choice(playing_clips)
         data = {
-            'url' : randomClip.audio_link,
-            'id' : randomClip.id,
+            'url': randomClip.audio_link,
+            'id': randomClip.id,
         }
     else:
         data = {
-            'error:' : 'None available', 
+            'error': 'No clips available',  
         }
 
     return JsonResponse(data)
