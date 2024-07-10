@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Song, Quiz, Score
+from .models import Song, Score
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,11 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
-        fields = '__all__'
-
-class QuizSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Quiz
         fields = '__all__'
     
 class ScoreSerializer(serializers.ModelSerializer):

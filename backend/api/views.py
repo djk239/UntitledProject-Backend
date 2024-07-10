@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
-from .serializers import UserSerializer, SongSerializer, QuizSerializer, ScoreSerializer
-from .models import Quiz, Song, Score
+from .serializers import UserSerializer, SongSerializer, ScoreSerializer
+from .models import Song, Score
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.http import JsonResponse
 import spotipy, json, random
