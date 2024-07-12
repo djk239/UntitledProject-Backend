@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "password", "email"]
         extra_kwargs = {"password": {"write_only": True}}
-        validators = [UniqueValidator()]
+        
 
     def validate_username(self, value):
         return bleach.clean(value)
