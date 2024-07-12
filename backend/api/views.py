@@ -10,10 +10,13 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from fuzzywuzzy import fuzz
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import permission_classes, api_view
+from dotenv import load_dotenv
+import os
 
 # Initialize Spotipy with credentials
-SPOTIPY_CLIENT_ID = '92c197ccced844e0afb389001abc394b'
-SPOTIPY_CLIENT_SECRET = 'b71745f784df4b2398557d04a71a7378'
+load_dotenv()
+SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
+SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID,
                                                            client_secret=SPOTIPY_CLIENT_SECRET))
 

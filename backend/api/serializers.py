@@ -1,15 +1,38 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from .models import Song, Score
+import bleach
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    username = serializers.CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
     class Meta:
         model = User
-        fields = ["id", "username", "password"]
+        fields = ["id", "username", "password", "email"]
         extra_kwargs = {"password": {"write_only": True}}
+        validators = [UniqueValidator()]
+
+    def validate_username(self, value):
+        return bleach.clean(value)
+    def validate_email(self, value):
+        return bleach.clean(value)
+    def validate_password(self, value):
+        return bleach.clean(value)
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            password=validated_data["password"],
+            email=validated_data["email"]
+        )
         return user
     
 class SongSerializer(serializers.ModelSerializer):
