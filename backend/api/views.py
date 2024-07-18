@@ -146,3 +146,11 @@ def user_score(request):
         return JsonResponse({'error': 'User score not found'}, status=404)
 
 
+class user_groups(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        groups = user.groups.all()
+        group_names = [group.name for group in groups]
+        return JsonResponse({'groups': group_names})

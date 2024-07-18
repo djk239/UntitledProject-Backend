@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SongListCreateAPIView, RandomClip, get_audio_source, CheckGuess, SignupView, ScoreListCreateAPIView, top_scores, user_score, MyTokenObtainPairView
+from .views import SongListCreateAPIView, RandomClip, get_audio_source, CheckGuess, SignupView, ScoreListCreateAPIView, top_scores, user_score, MyTokenObtainPairView, user_groups
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('top-scores/', top_scores, name='top_scores'),
     path('user-score/', user_score, name='userscore'),
+    path('user-groups/', user_groups.as_view(), name='usersgroups'),
 ]
