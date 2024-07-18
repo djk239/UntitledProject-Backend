@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import Song, Score
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 import bleach
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,3 +46,11 @@ class ScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Score
         fields = ('id', 'score', 'username')
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token_serializer(cls, user):
+        token = super().get_token(user)
+        # ADD GROUP
+        token['groups'] = [group.name for group in user.groups.all()]
+        return token

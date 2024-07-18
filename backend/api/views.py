@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
-from .serializers import UserSerializer, SongSerializer, ScoreSerializer
+from .serializers import UserSerializer, SongSerializer, ScoreSerializer, MyTokenObtainPairSerializer
 from .models import Song, Score
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.http import JsonResponse
@@ -11,6 +11,7 @@ from fuzzywuzzy import fuzz
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import permission_classes, api_view
 from dotenv import load_dotenv
+from rest_framework_simplejwt.views import TokenObtainPairView
 import os
 
 # Initialize Spotipy with credentials
@@ -124,6 +125,9 @@ class SignupView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 @permission_classes([IsAuthenticated])
 def top_scores(request):
     top_users = Score.objects.order_by('-score')[:10]
@@ -140,4 +144,5 @@ def user_score(request):
         return JsonResponse(serializer.data)
     except Score.DoesNotExist:
         return JsonResponse({'error': 'User score not found'}, status=404)
+
 
