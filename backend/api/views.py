@@ -63,7 +63,9 @@ def CheckGuess(request):
             data = json.loads(request.body)
             song_id = data.get('id')
             title = data.get('title')
-            
+            guesses = data.get('guesses')
+
+
             if song_id is None or title is None:
                 return JsonResponse({'error': 'ID and title are required.'}, status=400)
 
@@ -79,7 +81,12 @@ def CheckGuess(request):
                 user = request.user  # User object is available due to authentication
                 try:
                     score = Score.objects.get(user=user)  # Get existing score object
-                    score.score += 1  # Increment score by 1
+                    if guesses==5:
+                        score.score += 3
+                    elif guesses > 3:
+                        score.score +=2
+                    else:
+                        score.score +=1
                     score.save()
                 except Score.DoesNotExist:
                     # Create a new score object if it doesn't exist yet
