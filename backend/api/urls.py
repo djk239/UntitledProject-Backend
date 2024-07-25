@@ -17,5 +17,5 @@ urlpatterns = [
     path('top-scores/', top_scores, name='top_scores'),
     path('user-score/', user_score, name='userscore'),
     path('user-groups/', user_groups.as_view(), name='usersgroups'),
-    path('/csrf-token/', get_csrf_token, name='csrftoken'),
+    path('csrf-token/', get_csrf_token, name='csrftoken'),
 ]
