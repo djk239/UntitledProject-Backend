@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import SongListCreateAPIView, RandomClip, get_audio_source, CheckGuess, SignupView, ScoreListCreateAPIView, top_scores, user_score, MyTokenObtainPairView, user_groups
+from .views import get_csrf_token
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
@@ -16,4 +17,5 @@ urlpatterns = [
     path('top-scores/', top_scores, name='top_scores'),
     path('user-score/', user_score, name='userscore'),
     path('user-groups/', user_groups.as_view(), name='usersgroups'),
+    path('/csrf-token/', get_csrf_token, name='csrftoken'),
 ]

@@ -8,7 +8,7 @@ from django.http import JsonResponse
 import spotipy, json, random
 from spotipy.oauth2 import SpotifyClientCredentials
 from fuzzywuzzy import fuzz
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.decorators import permission_classes, api_view
 from dotenv import load_dotenv
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -55,7 +55,6 @@ def RandomClip(request):
 
     return JsonResponse(data)
 
-@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def CheckGuess(request):
@@ -154,3 +153,7 @@ class user_groups(generics.ListCreateAPIView):
         groups = user.groups.all()
         group_names = [group.name for group in groups]
         return JsonResponse({'groups': group_names})
+    
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({'csrf_token': get_token(request)})
